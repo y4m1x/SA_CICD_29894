@@ -2,8 +2,8 @@ FROM alpine:latest
 
 WORKDIR /app
 
-COPY . .
+COPY test.sh .
 
 RUN chmod +x test.sh
 
-CMD ["sh", "-c", "echo 'Aplikacija uspešno zagnana iz Docker zabojnika' && ./test.sh"]
+CMD ["sh", "test.sh"]
