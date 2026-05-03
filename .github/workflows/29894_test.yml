@@ -20,7 +20,7 @@ jobs:
             echo "Napaka: test.sh ne obstaja" > napaka.txt
             exit 1
           else
-            echo "" > napaka.txt
+            : > napaka.txt
           fi
 
       - name: Shrani artefakt
