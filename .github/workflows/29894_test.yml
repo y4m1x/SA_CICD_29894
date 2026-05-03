@@ -1,0 +1,56 @@
+name: Test Workflow
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+
+  # PRVI JOB: preveri če obstajajo testi
+  check-tests:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Preveri obstoj testov
+        run: |
+          if [ ! -f "test.sh" ]; then
+            echo "Napaka: test.sh ne obstaja" > napaka.txt
+            exit 1
+          else
+            echo "" > napaka.txt
+          fi
+
+      - name: Shrani artefakt
+        uses: actions/upload-artifact@v4
+        with:
+          name: napaka
+          path: napaka.txt
+
+  # DRUGI JOB: požene teste
+  run-tests:
+    needs: check-tests
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Prenesi artefakt
+        uses: actions/download-artifact@v4
+        with:
+          name: napaka
+
+      - name: Preveri napako
+        run: |
+          if [ -s napaka.txt ]; then
+            echo "Napaka obstaja, ustavljam."
+            exit 1
+          fi
+
+      - name: Zaženi teste
+        run: |
+          chmod +x test.sh
+          ./test.sh
